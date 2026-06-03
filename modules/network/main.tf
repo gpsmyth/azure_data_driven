@@ -19,7 +19,7 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = [each.value.cidr_block]
   location            = var.region
   resource_group_name = var.resource_group_name
-  tags                = var.common_tags
+  tags                = var.network_tags
 }
 
 # Flatten subnets config
@@ -48,7 +48,7 @@ resource "azurerm_network_security_group" "nsg" {
   name                = each.value.nsg.name
   location            = var.region
   resource_group_name = var.resource_group_name
-  tags                = var.common_tags
+  tags                = var.network_tags
 }
 
 # Subnets
@@ -84,7 +84,7 @@ resource "azurerm_public_ip" "bastion_pip" {
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
-  tags                = var.common_tags
+  tags                = var.security_tags
 }
 
 # Bastion hosts
@@ -104,7 +104,7 @@ resource "azurerm_bastion_host" "bastion" {
     public_ip_address_id = azurerm_public_ip.bastion_pip[each.key].id
   }
 
-  tags = var.common_tags
+  tags = var.security_tags
 }
 
 # Diagnostics for Bastion
