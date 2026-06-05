@@ -7,11 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v3.0.1
         with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
-            {
-              "text": "Push to ${{ github.repository }} by ${{ github.actor }} on branch ${{ github.ref_name }}\nCommit: ${{ github.event.head_commit.message }}"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+            text: "Push to ${{ github.repository }} by ${{ github.actor }} on branch ${{ github.ref_name }}\nCommit: ${{ github.event.head_commit.message }}"
