@@ -72,7 +72,3 @@ pre-commit run --all-files
 git commit -m "my message" --no-verify
 ```
 Though obviously use that sparingly.
-
-### Webhook thoughts
-
-- Investigating
