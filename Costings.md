@@ -139,3 +139,7 @@ module.vnet_creation.azurerm_subnet_network…association.subnet_nsg_assoc["spok
 
 - Wilst stand-alone module uses `infracost scan` the hook ID in `antonbabenko/pre-commit-terraform` has not caught up with this change yet.
 - https://github.com/antonbabenko/pre-commit-terraform#available-hooks presently shows hook  `infracost_breakdown` and is used in the pre-commit yaml file
+
+### Testing Infracost via GHA
+
+- Create a PR to trigger the infracost workflow
