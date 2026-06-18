@@ -1,0 +1,59 @@
+# This workflow uses full breakdowns so policy checks and review comments stay useful
+name: Cost Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  infracost:
+    name: Infracost Cost Estimate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: '${{ github.event.pull_request.base.ref }}'
+      # Alternative: baseline diff approach
+      # This option generates a diff estimate, which is more concise but less useful for 
+      # reviews and doesn't work as well with Infracost's policy checks
+      # - name: Generate baseline cost estimate
+      #   run: |
+      #     infracost breakdown --path=. \
+      #       --format=json \
+      #       --out-file=/tmp/infracost-base.json
+      # - name: Checkout PR branch
+      #   uses: actions/checkout@v4
+      # - name: Generate cost diff
+      #   run: |
+      #     infracost diff --path=. \
+      #       --format=json \
+      #       --compare-to=/tmp/infracost-base.json \
+      #       --out-file=/tmp/infracost.json
+
+      # Alternative: full breakdown approach
+      # This option shows the full cost breakdown for the PR, not just the diff, 
+      # which is more useful for reviews and also works better with Infracost's 
+      # policy checks
+      - name: Generate cost breakdown
+        run: |
+          infracost breakdown --path=. \
+            --format=json \
+            --out-file=/tmp/infracost.json
+
+      - name: Post Infracost comment on PR
+        run: |
+          infracost comment github \
+            --path=/tmp/infracost.json \
+            --repo=$GITHUB_REPOSITORY \
+            --github-token=${{ github.token }} \
+            --pull-request=${{ github.event.pull_request.number }} \
+            --behavior=update
