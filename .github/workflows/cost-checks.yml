@@ -49,6 +49,15 @@ jobs:
             --format=json \
             --out-file=/tmp/infracost.json
 
+      - name: Debug - show infracost.json content
+        run: |
+          cat /tmp/infracost.json | head -c 3000
+          echo ""
+          echo "--- Resource count check ---"
+          cat /tmp/infracost.json | jq '.projects[0].breakdown.resources | length'
+          echo "--- Total monthly cost ---"
+          cat /tmp/infracost.json | jq '.totalMonthlyCost'
+            
       - name: Post Infracost comment on PR
         run: |
           infracost comment github \
