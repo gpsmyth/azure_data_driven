@@ -51,12 +51,29 @@ jobs:
 
       - name: Debug - show infracost.json content
         run: |
-          cat /tmp/infracost.json | head -c 3000
+          cat /tmp/infracost.json | jq '.' # pretty-print the JSON for easier debugging
           echo ""
           echo "--- Resource count check ---"
           cat /tmp/infracost.json | jq '.projects[0] | keys'
           echo "--- Total monthly cost ---"
           cat /tmp/infracost.json | jq '.totalMonthlyCost'
+          echo "--- breakdown resource count ---"
+          cat /tmp/infracost.json | jq '.projects[0].breakdown.resources | length'
+
+          echo "--- pastBreakdown resource count ---"
+          cat /tmp/infracost.json | jq '.projects[0].pastBreakdown.resources | length'
+
+          echo "--- breakdown total cost ---"
+          cat /tmp/infracost.json | jq '.projects[0].breakdown.totalMonthlyCost'
+
+          echo "--- pastBreakdown total cost ---"
+          cat /tmp/infracost.json | jq '.projects[0].pastBreakdown.totalMonthlyCost'
+
+          echo "--- summary ---"
+          cat /tmp/infracost.json | jq '.projects[0].summary'
+
+          echo "--- diff resource count ---"
+          cat /tmp/infracost.json | jq '.projects[0].diff.resources | length'
             
       - name: Post Infracost comment on PR
         run: |
