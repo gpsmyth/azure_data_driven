@@ -54,7 +54,7 @@ jobs:
           cat /tmp/infracost.json | head -c 3000
           echo ""
           echo "--- Resource count check ---"
-          cat /tmp/infracost.json | jq '.projects[0].breakdown.resources | length'
+          cat /tmp/infracost.json | jq '.projects[0] | keys'
           echo "--- Total monthly cost ---"
           cat /tmp/infracost.json | jq '.totalMonthlyCost'
             
