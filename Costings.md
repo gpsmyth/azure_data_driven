@@ -140,6 +140,36 @@ module.vnet_creation.azurerm_subnet_network…association.subnet_nsg_assoc["spok
 - Wilst stand-alone module uses `infracost scan` the hook ID in `antonbabenko/pre-commit-terraform` has not caught up with this change yet.
 - https://github.com/antonbabenko/pre-commit-terraform#available-hooks presently shows hook  `infracost_breakdown` and is used in the pre-commit yaml file
 
-### Testing Infracost via GHA
+### Testing Infracost
 
-- Create a PR to trigger the infracost workflow
+- Infracost has moved to an **App-based integration model** (similar to the GitHub Slack app I set up earlier) rather than the old CLI-comment-in-workflow model. Since I connected GitHub in my dashboard earlier, Infracost is now **automatically** detecting PRs and posting comments **independently of my GitHub Actions workflow file** — it doesn't need my `cost-checks.yml` at all anymore
+- The Infracost GitHub App is independently posting/updating its comments, completely separate from my GitHub Actions workflow.
+- The Infracost App still comments without any workflow file present
+
+```bash
+infracost comment github --help
+Info: `infracost comment` is no longer supported. Configure an official CI/CD integration with `infracost ci setup` instead.
+```
+
+```bash
+infracost ci setup
+
+Scanning repository
+  ✔  GitHub repository  gpsmyth/azure_data_driven
+  ✔  Infracost org      gps
+  ✔  App integration already connected
+
+This repository is already sending PR cost estimates.
+To manage settings, visit:
+  https://dashboard.infracost.io/org/gps/repos
+
+     ╭───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+     │                                                                                                       │
+     │  Setup complete.                                                                                      │
+     │                                                                                                       │
+     │  What's next?                                                                                         │
+     │    → Open a pull request that changes your infrastructure — Infracost will comment with the cost      │
+     │    diff                                                                                               │
+     │                                                                                                       │
+     ╰───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
