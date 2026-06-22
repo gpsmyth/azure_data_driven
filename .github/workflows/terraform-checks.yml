@@ -15,9 +15,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.14.5"
+          terraform_version: "~1.14.5"
+          terraform_wrapper: false  # ← disables the wrapper, removes the warning
+          # The wrapper's only job is to capture stdout/stdin for using Terraform 
+          # outputs in later workflow steps
 
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
