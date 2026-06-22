@@ -1,0 +1,64 @@
+name: Terraform Checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  terraform-fmt:
+    name: Terraform format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.14.5"
+          terraform_wrapper: false  # ← disables the wrapper, removes the warning
+          # The wrapper's only job is to capture stdout/stdin for using Terraform 
+          # outputs in later workflow steps
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+  terraform-validate:
+    name: Terraform Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.14.5"
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        run: terraform validate
+  tflint:
+    name: TFLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v6
+        with:
+          tflint_version: latest # Defaults to latest
+
+      - name: Show TFLint version
+        run: tflint --version
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # Prevents API rate-limiting when downloading plugins
+
+      - name: Run TFLint
+        run: tflint --recursive -f compact
