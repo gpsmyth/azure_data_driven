@@ -10,6 +10,8 @@ jobs:
   checkov:
     name: Checkov Security Scan
     runs-on: ubuntu-latest
+    #checkov:skip=CKV2_GHA_1:security-events write is required and scoped correctly for SARIF upload
+
     permissions:
       contents: read
       security-events: write
@@ -24,7 +26,7 @@ jobs:
           directory: .
           output_format: sarif
           output_file_path: checkov.sarif
-          soft_fail: true # Don't fail the build on Checkov issues, just report them#          # checkov_args: --check CKV_AZURE_99 --check CKV_AZURE_100 # Example of how to specify specific checks
+          soft_fail: true # Don't fail the build on Checkov issues, just report them# 
 
       - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
