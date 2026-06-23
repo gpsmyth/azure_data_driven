@@ -10,11 +10,10 @@ jobs:
   checkov:
     name: Checkov Security Scan
     runs-on: ubuntu-latest
-    #checkov:skip=CKV2_GHA_1:security-events write is required and scoped correctly for SARIF upload
 
     permissions:
       contents: read
-      security-events: write
+      security-events: write     #checkov:skip=CKV2_GHA_1:security-events write is required and scoped correctly for SARIF upload
       actions: read
     steps:
       - name: Checkout code
